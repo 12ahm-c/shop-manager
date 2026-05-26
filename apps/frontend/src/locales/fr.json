@@ -16,7 +16,8 @@
     "logout": "Déconnexion",
     "stockReceive": "Réception stock",
     "stockAdjust": "Ajustement stock",
-    "stockTransfer": "Transfert stock"
+    "stockTransfer": "Transfert stock",
+    "debts": "Dettes en retard"
   },
   "common": {
     "loading": "Chargement...",
@@ -32,7 +33,10 @@
     "search": "Rechercher",
     "noResults": "Aucun résultat trouvé.",
     "processing": "Traitement...",
-    "back": "Retour"
+    "back": "Retour",
+    "phone": "Téléphone",
+    "days": "jours",
+    "optional": "optionnel"
   },
   "pos": {
     "currentSale": "Vente en cours",
@@ -110,5 +114,29 @@
     "toStoreId": "ID Magasin destination",
     "transferStock": "Transférer le stock",
     "transferSuccess": "Stock transféré avec succès !"
+  },
+  "customers": {
+    "profile": "Profil client",
+    "customer": "Client",
+    "currentDebt": "Dette actuelle",
+    "creditLimit": "Limite de crédit",
+    "loyaltyPoints": "Points de fidélité",
+    "totalPurchases": "Achats totaux",
+    "recentPurchases": "Achats récents",
+    "noPurchases": "Aucun achat pour l'instant.",
+    "payDebt": "Payer la dette",
+    "amountToPay": "Montant à payer",
+    "wallet": "Portefeuille",
+    "walletPlaceholder": "Entrer l'ID du portefeuille",
+    "confirmPayment": "Confirmer le paiement",
+    "paymentSuccess": "Paiement enregistré avec succès.",
+    "overdueDebts": "Dettes en retard",
+    "overdueDebtsDesc": "Clients avec des soldes impayés depuis plus de 30 jours.",
+    "noOverdue": "Aucune dette en retard. Excellent !",
+    "daysOverdue": "Jours de retard",
+    "viewProfile": "Voir le profil"
+  },
+  "sales": {
+    "invoice": "Facture"
   }
 }

@@ -16,7 +16,8 @@
     "logout": "تسجيل الخروج",
     "stockReceive": "استلام المخزون",
     "stockAdjust": "تعديل المخزون",
-    "stockTransfer": "نقل المخزون"
+    "stockTransfer": "نقل المخزون",
+    "debts": "الديون المتأخرة"
   },
   "common": {
     "loading": "جاري التحميل...",
@@ -32,7 +33,10 @@
     "search": "بحث",
     "noResults": "لا توجد نتائج.",
     "processing": "جاري المعالجة...",
-    "back": "رجوع"
+    "back": "رجوع",
+    "phone": "رقم الهاتف",
+    "days": "أيام",
+    "optional": "اختياري"
   },
   "pos": {
     "currentSale": "البيع الحالي",
@@ -110,5 +114,29 @@
     "toStoreId": "معرف المتجر الوجهة",
     "transferStock": "نقل المخزون",
     "transferSuccess": "تم نقل المخزون بنجاح!"
+  },
+  "customers": {
+    "profile": "ملف العميل",
+    "customer": "العميل",
+    "currentDebt": "الدين الحالي",
+    "creditLimit": "الحد الائتماني",
+    "loyaltyPoints": "نقاط الولاء",
+    "totalPurchases": "إجمالي المشتريات",
+    "recentPurchases": "المشتريات الحديثة",
+    "noPurchases": "لا توجد مشتريات بعد.",
+    "payDebt": "دفع الدين",
+    "amountToPay": "المبلغ المراد دفعه",
+    "wallet": "المحفظة",
+    "walletPlaceholder": "أدخل معرف المحفظة",
+    "confirmPayment": "تأكيد الدفع",
+    "paymentSuccess": "تم تسجيل الدفع بنجاح.",
+    "overdueDebts": "الديون المتأخرة",
+    "overdueDebtsDesc": "عملاء لديهم أرصدة غير مدفوعة منذ أكثر من 30 يومًا.",
+    "noOverdue": "لا توجد ديون متأخرة. عمل ممتاز!",
+    "daysOverdue": "أيام التأخير",
+    "viewProfile": "عرض الملف الشخصي"
+  },
+  "sales": {
+    "invoice": "فاتورة"
   }
 }
