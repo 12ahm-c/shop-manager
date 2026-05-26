@@ -44,3 +44,43 @@ Based on `docs/frontend-plan.md`.
 - `[x]` Implement loading, error, empty, and success states for all async views.
 - `[x]` Ensure accessible semantic HTML, keyboard support, and focus states.
 - `[x]` Run and pass `npm run lint`, `npm run typecheck`, and `npm run build`.
+
+# Phase 2 - POS and Sales Tasks
+
+Based on `docs/frontend-plan.md`.
+
+## 1. Core State
+- `[x]` Initialize/Update Zustand stores:
+  - `[x]` `cartStore`: POS cart, selected customer, payment method, wallet, cash given, loyalty usage.
+  - `[x]` `walletStore`: Wallet list/cache for payment and finance views.
+
+## 2. API & Mocks Implementation
+*Ensure mock responses return `{ success, data, error, meta }` and follow contract formats.*
+- `[x]` Implement `GET /products/search` adapter & mock.
+- `[x]` Implement `GET /wallets` adapter & mock.
+- `[x]` Implement `GET /customers/search` adapter & mock.
+- `[x]` Implement `POST /customers` adapter & mock.
+- `[x]` Implement `POST /customers/:id/loyalty/redeem` adapter & mock.
+- `[x]` Implement `POST /sales` adapter & mock (must support `Idempotency-Key`).
+- `[x]` Implement `GET /sales/me/daily` adapter & mock.
+
+## 3. POS Screen (`/pos`)
+- `[x]` **Product Search & Add**:
+  - `[x]` Barcode/text search input.
+  - `[x]` Add to cart functionality.
+- `[x]` **Cart & Customer**:
+  - `[x]` Cart UI with item quantity controls.
+  - `[x]` Customer attach and quick create form.
+  - `[x]` Loyalty redemption check/call before sale when used.
+- `[x]` **Payment & Submission**:
+  - `[x]` Payment method selection (cash, card, credit, mixed).
+  - `[x]` Wallet selection.
+  - `[x]` Cash given input and change calculation/display.
+  - `[x]` Sale submission passing `Idempotency-Key`.
+  - `[x]` Sale success screen with receipt summary.
+
+## 4. Quality & Definition of Done
+- `[x]` Implement loading, error, empty, and success states for all async views.
+- `[x]` Ensure employee UI hides sensitive financial/stock-cost fields (if any on POS).
+- `[x]` Bilingual (French/Arabic) and RTL layout verification.
+- `[x]` Run and pass `npm run lint`, `npm run typecheck`, and `npm run build`.

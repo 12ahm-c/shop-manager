@@ -23,5 +23,28 @@
     "cancel": "إلغاء",
     "edit": "تعديل",
     "delete": "حذف"
+  },
+  "pos": {
+    "currentSale": "البيع الحالي",
+    "clear": "إفراغ",
+    "emptyCart": "السلة فارغة",
+    "total": "المجموع",
+    "checkout": "دفع",
+    "searchPlaceholder": "ابحث عن منتج بالاسم أو الباركود...",
+    "inStock": "في المخزن",
+    "completeSale": "إتمام البيع",
+    "paymentMethod": "طريقة الدفع",
+    "cash": "نقداً",
+    "mixed": "مختلط",
+    "cashGiven": "المبلغ المستلم",
+    "change": "الباقي",
+    "wallet": "الخزينة/المحفظة",
+    "selectWallet": "اختر الخزينة...",
+    "totalToPay": "الإجمالي للدفع",
+    "confirmSale": "تأكيد البيع",
+    "saleCompleted": "اكتمل البيع",
+    "invoice": "فاتورة",
+    "pointsEarned": "النقاط المكتسبة",
+    "newSale": "بيع جديد"
   }
 }
