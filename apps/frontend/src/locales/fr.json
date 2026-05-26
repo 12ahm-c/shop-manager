@@ -1,0 +1,27 @@
+{
+  "login": {
+    "title": "Connexion",
+    "phone": "Numéro de téléphone",
+    "password": "Mot de passe",
+    "storeId": "Magasin",
+    "submit": "Se connecter"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "pos": "Caisse (POS)",
+    "products": "Produits",
+    "customers": "Clients",
+    "employees": "Employés",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer"
+  }
+}
