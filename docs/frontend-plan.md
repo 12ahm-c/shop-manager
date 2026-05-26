@@ -156,7 +156,6 @@ Deliver:
 - Product stock detail using `GET /stock/:productId`.
 - Stock receipt form that creates architecture v2 `stock` lot documents.
 - Stock adjustment form.
-- Expiring stock page.
 - Stock transfer page.
 
 Key endpoints:
@@ -262,7 +261,6 @@ Deliver:
 /admin/products/:id/edit
 /admin/stock/receive
 /admin/stock/adjust
-/admin/stock/expiring
 /admin/stock/transfer
 /admin/suppliers
 /admin/suppliers/:id
@@ -273,7 +271,6 @@ Deliver:
 /admin/reports
 /admin/alerts
 /admin/logs
-/admin/settings
 /admin/backup
 /admin/stores
 

@@ -95,7 +95,7 @@ Backend:
 
 - Product CRUD/search/import.
 - Unified `stock` model and endpoints.
-- Stock receipt, adjustment, transfer, expiring stock.
+- Stock receipt, adjustment, transfer.
 - Supplier debt increment on stock receipt.
 - `Sale` model with embedded `items`.
 - Sale transaction with FIFO stock decrement.
@@ -191,7 +191,7 @@ Backend:
 - Invoice resend endpoint.
 - Notification endpoints.
 - Alert anti-spam rules.
-- Expiry, debt, low-wallet, stock-critical jobs/events.
+- Debt, low-wallet, stock-critical jobs/events.
 
 Frontend:
 

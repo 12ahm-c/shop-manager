@@ -96,7 +96,6 @@ ShopManager Pro est une solution SaaS de gestion commerciale universelle destin�
 ## 3. Architecture en couches
 
 ```
-
 ┌─────────────────────────────────────────────────────────────┐
 │                      COUCHE CLIENT                          │
 │  - Interface Web (React + Vite + Tailwind)                  │
@@ -107,7 +106,7 @@ ShopManager Pro est une solution SaaS de gestion commerciale universelle destin�
 ┌─────────────────────────────────────────────────────────────┐
 │                   COUCHE PRÉSENTATION (API)                 │
 │  - Middlewares : auth, rbac, validation, rate limit         │
-│  - Controllers : mapping HTTP → services                     │
+│  - Controllers : mapping HTTP → services                    │
 └─────────────────────────────────────────────────────────────┘
 │
 ┌─────────────────────────────────────────────────────────────┐
@@ -162,7 +161,7 @@ shopmanager-backend/
 │   │   └── notifications/ (notification.routes.js, notification.controller.js, notification.service.js, notification.model.js)
 │   ├── services/ (pdf.service.js, whatsapp.service.js, email.service.js, loyalty.service.js, alert.service.js, log.service.js, queue.service.js, llm.service.js)
 │   ├── socket/ (socket.server.js, alert.socket.js, dashboard.socket.js, ai.socket.js)
-│   ├── jobs/ (dailyReport.job.js, weeklySummary.job.js, expiryCheck.job.js, debtReminder.job.js, backup.job.js, syncRetry.job.js)
+│   ├── jobs/ (dailyReport.job.js, weeklySummary.job.js, debtReminder.job.js, backup.job.js, syncRetry.job.js)
 │   ├── middlewares/ (auth.middleware.js, rbac.middleware.js, audit.middleware.js, rateLimit.middleware.js, validate.middleware.js, error.middleware.js)
 │   ├── utils/ (apiResponse.js, invoiceNumber.js, encryption.js, fifo.util.js, date.util.js)
 │   ├── config/ (database.js, redis.js, whatsapp.js, llm.js)
@@ -257,17 +256,17 @@ shopmanager-frontend/
   10. Commit, émission Socket.IO, vérification alertes
   11. Retour `{ saleId, invoiceNumber, changeAmount, loyaltyPointsEarned }`
 
+> *L'annulation d'une vente ne supprime pas la `sale` ni la `invoice`. On marque uniquement `invoice.status = 'cancelled'` et `invoice.cancelledAt = now()`.*
+
 ### 6.3 Module Stock
 - **Responsabilités** : gestion unifiée des stocks (quantité, prix moyen).
 - **Fonctions** :
   - `receiveStock(input)` : ajoute quantité, met à jour prix moyen, incrémente dette fournisseur.
   - `sellStock(productId, quantity)` : décrémente quantité.
   - `adjustStock(productId, quantity, reason)` : correction manuelle.
-  - `checkExpiryDates()` : vérification quotidienne péremptions.
 - **Endpoints (admin)** :
   - `POST /api/stock/receive`
   - `POST /api/stock/adjust`
-  - `GET /api/stock/expiring`
   - `POST /api/stock/transfer`
 
 ### 6.4 Module Wallets & Transactions
@@ -337,6 +336,8 @@ shopmanager-frontend/
 }
 ```
 
+> *Note : Tous les paramètres du magasin (vatRate, loyaltyPointsPer100, etc.) sont stockés exclusivement dans l'objet `settings` de la collection `stores`. Aucune collection `settings` séparée n'existe.*
+
 7.3 Collection products
 
 ```javascript
@@ -367,7 +368,6 @@ shopmanager-frontend/
   storeId: ObjectId,
   productId: ObjectId,
   quantity: Number,
-  expiryDate: Date,          // optionnel, pour produits périssables
   lotNumber: String,         // optionnel, pour traçabilité
   purchasePrice: Number,     // prix d'achat de ce lot spécifique
   receptionDate: Date,
@@ -376,10 +376,10 @@ shopmanager-frontend/
   createdAt: Date,
   updatedAt: Date
 }
-// Index : { productId: 1, expiryDate: 1, receptionDate: 1 }
+// Index : { productId: 1, receptionDate: 1 }
 ```
 
-Note : La gestion FIFO se fait en sélectionnant les documents stock triés par receptionDate (et expiryDate si applicable). Les mouvements ne sont pas stockés séparément ; on calcule la quantité totale par agrégation.
+Note : La gestion FIFO se fait en sélectionnant les documents stock triés par receptionDate. Les mouvements ne sont pas stockés séparément ; on calcule la quantité totale par agrégation.
 
 7.5 Collection sales (avec items intégrés – suppression de sale_items)
 
@@ -391,8 +391,15 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
   customerId: ObjectId,
   totalAmount: Number,
   discount: Number,
+  vatAmount: Number,         // montant TVA calculé
+  vatRate: Number,           // taux TVA appliqué au moment de la vente
   paymentMethod: ['cash', 'card', 'credit', 'mixed'],
-  walletId: ObjectId,
+  walletId: ObjectId,        // optionnel (required: false)
+  paymentBreakdown: {        // optionnel, pour paiements mixtes
+    cash: Number,
+    card: Number,
+    credit: Number
+  },
   isCredit: Boolean,
   debtAmount: Number,
   status: 'completed' | 'cancelled',
@@ -411,6 +418,8 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
   ]
 }
 ```
+
+> *Note : En cas de paiement mixte, seul le montant payé en espèces/carte est enregistré dans `wallet_transactions`. Le montant crédité augmente uniquement `customer.currentDebt` sans mouvement de wallet.*
 
 7.6 Collection customers
 
@@ -499,9 +508,14 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
   sentAt: Date,
   whatsappMessageId: String,
   emailMessageId: String,
-  error: String
+  error: String,
+  status: { type: String, enum: ['issued', 'cancelled'], default: 'issued' },
+  cancelledAt: Date,
+  whatsappRetryCount: Number
 }
 ```
+
+> *Règle : En cas d'annulation, le numéro de facture n'est jamais réutilisé. Le compteur `invoiceNextNumber` n'est pas décrémenté.*
 
 7.11 Collection notifications
 
@@ -509,7 +523,7 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
 {
   _id: ObjectId,
   storeId: ObjectId,
-  type: 'stock_critical' | 'out_of_stock' | 'expiry_soon' | 'debt_overdue' | 'low_wallet',
+  type: 'stock_critical' | 'out_of_stock' | 'debt_overdue' | 'low_wallet' | 'whatsapp_failed',
   message: String,
   targetRole: ['admin', 'employee', 'accountant'],
   targetUserId: ObjectId,
@@ -536,26 +550,15 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
 }
 ```
 
-7.13 Collection settings
 
-```javascript
-{
-  _id: ObjectId,
-  storeId: ObjectId, unique,
-  key: String,
-  value: Mixed,
-  updatedBy: ObjectId,
-  updatedAt: Date
-}
-```
 
-7.14 Collection employees (gestion des employés – distincte de users pour plus de flexibilité)
+7.13 Collection employees (gestion des employés – distincte de users pour plus de flexibilité)
 
 ```javascript
 {
   _id: ObjectId,
   storeId: ObjectId,
-  userId: ObjectId,            // référence vers users (compte de connexion)
+  userId: ObjectId,            // optionnel — uniquement pour les employés ayant accès au système
   employeeNumber: String,      // matricule unique
   position: String,            // 'caissier', 'superviseur', 'gérant'
   hireDate: Date,
@@ -574,6 +577,8 @@ Note : La gestion FIFO se fait en sélectionnant les documents stock triés par 
   updatedAt: Date
 }
 ```
+
+> *Note : Certains employés (ex: livreurs) sont enregistrés à des fins RH uniquement, sans compte de connexion au système.*
 
 ---
 
@@ -595,11 +600,11 @@ products ───< appears in >─── stock (1..N)
 stock ───< consumed by >─── sales.items
 sales ───< generates >─── invoices (1..1)
 sales ───< linked to >─── customer (0..1)
-sales ───< credited to >─── wallet (1..1)
+sales ───< credited to >─── wallet (0..1)
 customers ───< has many >─── sales
 suppliers ───< provides >─── stock
 wallets ───< has many >─── wallet_transactions
-users ───< is linked to >─── employees (1..1)
+users ───< is linked to >─── employees (0..1)
 ```
 
 Contraintes : Transactions ACID pour opérations critiques (vente, réception). Validations mongoose ref.
@@ -615,7 +620,7 @@ Contraintes : Transactions ACID pour opérations critiques (vente, réception). 
 3. Service :
    · Démarre session MongoDB
    · Pour chaque item : vérifie stock disponible (agrégation sur stock)
-   · Sélectionne les lots FIFO (tri par receptionDate, expiryDate)
+   · Sélectionne les lots FIFO (tri par receptionDate)
    · Calcule total, TVA, points
 4. Si paiement crédit : vérifie customer.creditLimit et currentDebt
 5. Création documents (transaction) :
@@ -630,11 +635,12 @@ Contraintes : Transactions ACID pour opérations critiques (vente, réception). 
 9.2 Gestion FIFO concurrente (atomique)
 
 ```javascript
-const stockItem = await Stock.findOneAndUpdate(
-  { _id: stockId, quantity: { $gte: requestedQuantity } },
-  { $inc: { quantity: -requestedQuantity } },
-  { new: true, session }
+const updated = await Stock.findOneAndUpdate(
+  { _id: item._id, quantity: { $gte: needed } },
+  { $inc: { quantity: -needed } },
+  { session, new: true }
 );
+if (!updated) throw new Error(`Stock insuffisant pour lot ${item._id}`);
 ```
 
 ---
@@ -650,7 +656,7 @@ const stockItem = await Stock.findOneAndUpdate(
 
 10.2 Événements
 
-· alert:stock_critical, alert:out_of_stock, alert:expiry_soon, alert:debt_overdue
+· alert:stock_critical, alert:out_of_stock, alert:debt_overdue
 · dashboard:update, sale:new, ai:response
 
 10.3 Authentification WebSocket
@@ -666,10 +672,14 @@ const stockItem = await Stock.findOneAndUpdate(
 Vente validée (client) ❌ ❌ ✅ (facture) ❌
 Vente à crédit ✅ ✅ ❌ ❌
 Stock critique ✅ ✅ ❌ ✅ (résumé)
-Péremption J+30 ✅ ✅ ❌ ✅
 Dette client > 30j ✅ ✅ ✅ (client) ✅
 
 Anti-spam : max 1 alerte/heure pour stock, max 3 relances dette, max 2 emails/jour admin.
+
+### 11.4 Politique de reprise WhatsApp
+
+· BullMQ avec `attempts: 5`, backoff exponentiel : 2s, 4s, 8s, 16s, 32s.
+· En cas d'échec final : mise à jour du champ `error` dans `invoices` + création d'une notification `whatsapp_failed` à destination de l'admin.
 
 ---
 
@@ -690,34 +700,23 @@ Anti-spam : max 1 alerte/heure pour stock, max 3 relances dette, max 2 emails/jo
 
 ---
 
-14. Architecture des alertes stock et péremption
+14. Architecture des alertes stock
 
 14.1 Vérification post-opération
 
 ```javascript
-async function checkProductAlerts(productId, stockId) {
+async function checkProductAlerts(productId) {
   const totalStock = await Stock.aggregate([...]); // somme quantités
   if (totalStock === 0) => alert out_of_stock
   else if (totalStock <= product.minStock) => alert stock_critical
-  
-  if (stockId) {
-    const stockItem = await Stock.findById(stockId);
-    if (daysToExpiry(stockItem.expiryDate) <= 30) => alert expiry_soon
-  }
 }
 ```
 
-14.2 Tâche planifiée – expiryCheck.job.js (quotidien 8h)
-
-· Recherche stock avec expiryDate <= J+30
-· Crée notifications + email admin
-
-14.3 Interface employé
+14.2 Interface employé
 
 · 🟢 Vert : stock > minStock
 · 🟠 Orange : stock ≤ minStock
 · 🔴 Rouge : rupture
-· ⚠️ Jaune : péremption imminente
 
 ---
 
@@ -727,6 +726,8 @@ async function checkProductAlerts(productId, stockId) {
 · Transaction : création WalletTransaction + mise à jour wallet.balance ($inc) dans transaction ACID.
 · Transfert entre portefeuilles : débit source, crédit destination, logs.
 · Alerte trésorerie si balance <= minBalance.
+
+> *Règle impérative : Chaque modification de solde d'un wallet (crédit, débit, transfert) DOIT créer une nouvelle entrée dans `wallet_transactions` dans la même transaction ACID. Aucune mise à jour directe de `wallet.balance` sans écriture correspondante dans `wallet_transactions` n'est autorisée.*
 
 ---
 
@@ -749,6 +750,12 @@ Flux :
 ```
 
 Sécurité : isolation par storeId, RBAC (employé ne peut pas poser de questions financières sensibles), logs optionnels.
+
+**Sécurité et RBAC :**
+
+· Le rôle de l'utilisateur (`req.user.role`) est injecté dans le `systemPrompt` envoyé au LLM.
+· Les fonctions (tools) disponibles sont filtrées selon le rôle : les employés n'ont pas accès aux métriques financières (CA, bénéfices, soldes wallets, prix d'achat).
+· L'API `/api/ai/chat` applique le middleware RBAC standard avant tout appel au LLM.
 
 ---
 
@@ -828,7 +835,6 @@ Sales GET /sales/me/daily employee
 Products GET /products/search?q= both
 Products POST /products admin
 Stock POST /stock/receive admin
-Stock GET /stock/expiring admin
 Customers POST /customers employee
 Customers GET /customers/search?phone= employee
 Customers POST /customers/:id/debt/pay employee
@@ -846,13 +852,13 @@ Admin POST /admin/employees admin
 20. Cron jobs & tâches planifiées
 
 Job Schedule Description
-dailyReportEmail 0 7 * * * Résumé stock critique + dette à l’admin
+dailyReportEmail 0 20 * * * Résumé stock critique + dette à l'admin
 weeklySummary 0 8 * * 1 Rapport hebdo (CA, top produits, alertes)
-expiryCheck 0 8 * * * Vérification péremptions J+30
 debtReminder 0 9 * * * Relances clients dettes > 30j
 backupDatabase 0 3 * * * Backup MongoDB vers S3
 cleanupInactiveTokens 0 2 * * 0 Supprime refresh tokens expirés
 generateInventoryReport 0 5 * * 1 Rapport stock valorisé
+syncRetry 0 */6 * * * Relance les envois échoués (WhatsApp, email) en attente dans la queue BullMQ
 
 ---
 
@@ -871,7 +877,7 @@ Indexation MongoDB :
 · products : index text (name, dci, barcode)
 · sales : index sur saleDate, cashierId, storeId
 · logs : index sur timestamp (desc), storeId
-· stock : index composé { productId: 1, expiryDate: 1, receptionDate: 1 }
+· stock : index composé { productId: 1, receptionDate: 1 }
 
 ---
 
@@ -1003,21 +1009,21 @@ class StockService {
   async sellFromStock(productId, quantity, session) {
     const stockItems = await Stock.find({
       productId,
-      quantity: { $gt: 0 },
-      expiryDate: { $gt: new Date() }
-    }).sort({ receptionDate: 1, expiryDate: 1 }).session(session);
+      quantity: { $gt: 0 }
+    }).sort({ receptionDate: 1 }).session(session);
     
     let remaining = quantity;
     const usedItems = [];
     for (const item of stockItems) {
-      const taken = Math.min(item.quantity, remaining);
-      await Stock.updateOne(
-        { _id: item._id },
-        { $inc: { quantity: -taken } },
-        { session }
+      const needed = Math.min(item.quantity, remaining);
+      const updated = await Stock.findOneAndUpdate(
+        { _id: item._id, quantity: { $gte: needed } },
+        { $inc: { quantity: -needed } },
+        { session, new: true }
       );
-      usedItems.push({ stockId: item._id, quantity: taken, purchasePrice: item.purchasePrice });
-      remaining -= taken;
+      if (!updated) continue;
+      usedItems.push({ stockId: item._id, quantity: needed, purchasePrice: item.purchasePrice });
+      remaining -= needed;
       if (remaining === 0) break;
     }
     if (remaining > 0) throw new Error('Stock insuffisant');
@@ -1027,4 +1033,3 @@ class StockService {
 ```
 
 ---
-

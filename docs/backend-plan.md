@@ -54,7 +54,7 @@ API:     http://localhost:3001/v1
 Socket:  http://localhost:3001
 ```
 
-PDF generation, WhatsApp/email delivery, reports, backups, expiry checks, debt reminders, and AI work must run through BullMQ or cron workers when asynchronous behavior is required.
+PDF generation, WhatsApp/email delivery, reports, backups, debt reminders, syncRetry, and AI work must run through BullMQ or cron workers when asynchronous behavior is required.
 
 ---
 
@@ -94,7 +94,6 @@ Backend implementation must use the architecture v2 collections:
 - `invoices`
 - `notifications`
 - `logs`
-- `settings`
 
 Important removals from earlier plans:
 
@@ -104,7 +103,7 @@ Important removals from earlier plans:
 - Sale line items are embedded in `sales.items`.
 - Stock lots are represented by documents in the unified `stock` collection.
 
-FIFO is implemented by selecting active `stock` documents for the product/store, ordered by `receptionDate` and `expiryDate`, then atomically decrementing quantities in a transaction.
+FIFO is implemented by selecting active `stock` documents for the product/store, ordered by `receptionDate`, then atomically decrementing quantities in a transaction.
 
 ---
 
@@ -159,7 +158,7 @@ Deliver:
 - `Product` model and indexes.
 - `Stock` model using architecture v2 fields.
 - Product CRUD/search/import endpoints.
-- Stock receipt, adjustment, product stock list, expiring stock, transfer endpoints.
+- Stock receipt, adjustment, product stock list, transfer endpoints.
 - Supplier debt update on stock receipt.
 
 Validation:

@@ -199,8 +199,7 @@ Product detail response includes totals computed from the unified `stock` collec
   "success": true,
   "data": {
     "product": { "_id": "65f...", "name": "T-shirt blanc" },
-    "totalStock": 45,
-    "expiringStock": 12
+    "totalStock": 45
   },
   "error": null,
   "meta": null
@@ -211,14 +210,13 @@ Product detail response includes totals computed from the unified `stock` collec
 
 ## 5. Stock
 
-Architecture v2 uses a single `stock` collection. Each document is a store/product lot with `quantity`, optional `expiryDate`, optional `lotNumber`, `purchasePrice`, `receptionDate`, `supplierId`, and `isActive`. There are no separate `stock_batches` or `stock_movements` collections.
+Architecture v2 uses a single `stock` collection. Each document is a store/product lot with `quantity`, optional `lotNumber`, `purchasePrice`, `receptionDate`, `supplierId`, and `isActive`. There are no separate `stock_batches` or `stock_movements` collections.
 
 | Method | Endpoint | Role | Description |
 |--------|----------|------|-------------|
 | `POST` | `/stock/receive` | admin | Create stock lot documents from supplier receipt |
 | `POST` | `/stock/adjust` | admin | Manual adjustment on a stock lot/product |
 | `GET` | `/stock/:productId` | employee/admin | Active stock lots for a product |
-| `GET` | `/stock/expiring` | admin | Lots expiring within `days` (default 30) |
 | `POST` | `/stock/transfer` | admin | Transfer stock between stores |
 
 `POST /stock/receive` request:
@@ -231,14 +229,13 @@ Architecture v2 uses a single `stock` collection. Each document is a store/produ
       "productId": "65f...",
       "quantity": 100,
       "purchasePrice": 1200,
-      "expiryDate": "2026-12-31",
       "lotNumber": "LOT-2026-001"
     }
   ]
 }
 ```
 
-FIFO is implemented by selecting `stock` documents ordered by `receptionDate` and `expiryDate`.
+FIFO is implemented by selecting `stock` documents ordered by `receptionDate`.
 
 ---
 
@@ -390,7 +387,7 @@ The AI service always filters by `storeId` and applies RBAC before generating/ex
 Notification types:
 
 ```text
-stock_critical | out_of_stock | expiry_soon | debt_overdue | low_wallet
+stock_critical | out_of_stock | debt_overdue | low_wallet | whatsapp_failed
 ```
 
 ---
@@ -405,7 +402,6 @@ stock_critical | out_of_stock | expiry_soon | debt_overdue | low_wallet
   "storeId": "65f...",
   "productId": "65f...",
   "quantity": 50,
-  "expiryDate": "2026-12-31",
   "lotNumber": "LOT-2026-001",
   "purchasePrice": 1200,
   "receptionDate": "2025-12-01T09:00:00.000Z",
@@ -476,7 +472,6 @@ ai:{userId}
 | `dashboard:update` | `admin:{storeId}` | Dashboard refresh |
 | `alert:stock_critical` | store/admin | Stock at or below threshold |
 | `alert:out_of_stock` | store/admin | Product unavailable |
-| `alert:expiry_soon` | admin | Lot expiry warning |
 | `alert:debt_overdue` | admin | Customer debt reminder |
 | `alert:low_wallet` | admin/accountant | Wallet below minimum |
 | `ai:response` | `ai:{userId}` | AI response/stream update |

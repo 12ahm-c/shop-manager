@@ -83,13 +83,13 @@ MongoDB collections must match architecture v2:
 
 ```text
 stores, users, employees, products, stock, sales, customers, suppliers,
-wallets, wallet_transactions, invoices, notifications, logs, settings
+wallets, wallet_transactions, invoices, notifications, logs
 ```
 
 Important indexes:
 
 - `products`: text/search indexes for name, barcode, category.
-- `stock`: `{ storeId: 1, productId: 1, expiryDate: 1, receptionDate: 1 }`.
+- `stock`: `{ storeId: 1, productId: 1, receptionDate: 1 }`.
 - `sales`: `{ storeId: 1, saleDate: -1 }`, `{ storeId: 1, cashierId: 1, saleDate: -1 }`.
 - `customers`: unique `{ storeId: 1, phone: 1 }`.
 - `wallet_transactions`: `{ storeId: 1, walletId: 1, timestamp: -1 }`.
