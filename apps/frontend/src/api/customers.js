@@ -57,5 +57,67 @@ export const customersApi = {
       error: null,
       meta: null
     };
+  },
+
+  getCustomer: async (id) => {
+    await delay(300);
+    const customer = mockCustomers.find(c => c._id === id);
+    if (!customer) {
+      return { success: false, data: null, error: { code: 'NOT_FOUND', message: "Customer not found" }, meta: null };
+    }
+    return {
+      success: true,
+      data: {
+        customer,
+        recentPurchases: [
+          { _id: 'sale-1', date: new Date().toISOString(), totalAmount: 1500, status: 'completed' },
+          { _id: 'sale-2', date: new Date(Date.now() - 86400000).toISOString(), totalAmount: 4200, status: 'completed' }
+        ]
+      },
+      error: null,
+      meta: null
+    };
+  },
+
+  payDebt: async (id, data, idempotencyKey) => {
+    // API Contract states: POST /customers/:id/debt/pay requires Idempotency-Key
+    await delay(400);
+    const customer = mockCustomers.find(c => c._id === id);
+    if (!customer) {
+      return { success: false, data: null, error: { code: 'NOT_FOUND', message: "Customer not found" }, meta: null };
+    }
+    
+    // Update local mock
+    customer.debt = Math.max(0, customer.debt - data.amount);
+    
+    return {
+      success: true,
+      data: {
+        paymentId: 'txn-' + Math.floor(Math.random() * 1000),
+        newDebt: customer.debt
+      },
+      error: null,
+      meta: null
+    };
+  },
+
+  getOverdueDebts: async () => {
+    await delay(400);
+    const overdue = mockCustomers.filter(c => c.debt > 0).map(c => ({
+      customer: c,
+      daysOverdue: Math.floor(Math.random() * 45) + 31 // Mock 31-75 days
+    }));
+    return {
+      success: true,
+      data: { overdue },
+      error: null,
+      meta: {
+        page: 1,
+        limit: 20,
+        total: overdue.length,
+        nextCursor: null,
+        hasMore: false
+      }
+    };
   }
 };

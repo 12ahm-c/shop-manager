@@ -8,11 +8,15 @@ import {
   LayoutDashboard,
   Store,
   Package,
+  PackagePlus,
+  PackageMinus,
+  ArrowRightLeft,
   Users,
   UserCog,
   LogOut,
   User as UserIcon,
   Menu,
+  AlertCircle,
 } from 'lucide-react';
 import { authApi } from '../api/auth';
 
@@ -39,6 +43,10 @@ export default function Layout() {
     { name: t('nav.products'), href: '/products', icon: Package, roles: ['admin', 'employee'] },
     { name: t('nav.customers'), href: '/customers', icon: Users, roles: ['admin', 'employee'] },
     { name: t('nav.employees'), href: '/admin/employees', icon: UserCog, roles: ['admin'] },
+    { name: t('nav.stockReceive'), href: '/admin/stock/receive', icon: PackagePlus, roles: ['admin'] },
+    { name: t('nav.stockAdjust'), href: '/admin/stock/adjust', icon: PackageMinus, roles: ['admin'] },
+    { name: t('nav.stockTransfer'), href: '/admin/stock/transfer', icon: ArrowRightLeft, roles: ['admin'] },
+    { name: t('nav.debts', 'Overdue Debts'), href: '/admin/debts', icon: AlertCircle, roles: ['admin'] },
   ];
 
   return (

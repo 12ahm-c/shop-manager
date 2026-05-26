@@ -84,3 +84,82 @@ Based on `docs/frontend-plan.md`.
 - `[x]` Ensure employee UI hides sensitive financial/stock-cost fields (if any on POS).
 - `[x]` Bilingual (French/Arabic) and RTL layout verification.
 - `[x]` Run and pass `npm run lint`, `npm run typecheck`, and `npm run build`.
+
+# Phase 3 - Products and Unified Stock Tasks
+
+Based on `docs/frontend-plan.md`.
+
+## 1. Core State
+- `[x]` Initialize/Update Zustand stores:
+  - `[x]` `productStore`: Product search cache and recently viewed products.
+
+## 2. API & Mocks Implementation
+*Ensure mock responses return `{ success, data, error, meta }` and follow contract formats. Use architecture v2 `stock` terminology, not `stock_batches`.*
+- `[x]` Implement `POST /products` adapter & mock.
+- `[x]` Implement `GET /products/search` adapter & mock (if not already done in Phase 2).
+- `[x]` Implement `GET /products/:id` adapter & mock.
+- `[x]` Implement `PUT /products/:id` adapter & mock.
+- `[x]` Implement `DELETE /products/:id` adapter & mock.
+- `[x]` Implement `POST /products/import` adapter & mock.
+- `[x]` Implement `POST /stock/receive` adapter & mock (must support `Idempotency-Key`).
+- `[x]` Implement `POST /stock/adjust` adapter & mock (must support `Idempotency-Key`).
+- `[x]` Implement `GET /stock/:productId` adapter & mock.
+- `[x]` Implement `POST /stock/transfer` adapter & mock.
+
+## 3. Product Management Screens
+- `[x]` **Product Search & List** (`/products`):
+  - `[x]` Search by name, barcode, or category.
+  - `[x]` Display product list.
+- `[x]` **Product Detail** (`/products/:id`):
+  - `[x]` View product details and aggregated stock.
+  - `[x]` Active stock lots list via `GET /stock/:productId`.
+- `[x]` **Admin Product Actions** (`/admin/products/new`, `/admin/products/:id/edit`):
+  - `[x]` Product creation form.
+  - `[x]` Product update form.
+  - `[x]` CSV/Excel import UI.
+
+## 4. Unified Stock Management Screens
+- `[x]` **Stock Receipt** (`/admin/stock/receive`):
+  - `[x]` Form to record supplier receipts.
+  - `[x]` Include submission with `Idempotency-Key`.
+- `[x]` **Stock Adjustment** (`/admin/stock/adjust`):
+  - `[x]` Form for manual adjustment on a stock lot.
+  - `[x]` Include submission with `Idempotency-Key`.
+- `[x]` **Stock Transfer** (`/admin/stock/transfer`):
+  - `[x]` Form to transfer stock between stores.
+
+## 5. Quality & Definition of Done
+- `[x]` Verify frontend language strictly uses "stock lots" or "stock entries" (not "stock_batches").
+- `[x]` Implement loading, error, empty, and success states for all async views.
+- `[x]` Employee UI hides sensitive financial/stock-cost fields (e.g., `purchasePrice`).
+- `[x]` Run and pass `npm run lint`, `npm run typecheck`, and `npm run build`.
+
+# Phase 4 - Customers, Loyalty, Debts Tasks
+
+Based on `docs/frontend-plan.md`.
+
+## 1. Core State
+- `[ ]` Initialize/Update Zustand stores:
+  - `[ ]` Ensure `cartStore` and `walletStore` integrate properly with new debt and loyalty data if required.
+
+## 2. API & Mocks Implementation
+*Ensure mock responses return `{ success, data, error, meta }` and follow contract formats.*
+- `[ ]` Implement `GET /customers/:id` adapter & mock.
+- `[ ]` Implement `POST /customers/:id/debt/pay` adapter & mock (must support `Idempotency-Key`).
+- `[ ]` Implement `GET /customers/debt/overdue` adapter & mock.
+
+## 3. Customer Management Screens
+- `[ ]` **Customer Profile** (`/customers/:id`):
+  - `[ ]` View profile details.
+  - `[ ]` Display debt, credit limit, and loyalty points.
+  - `[ ]` Display purchase history.
+- `[ ]` **Debt Payment Form**:
+  - `[ ]` Interface for customers to pay off debt.
+  - `[ ]` Submission passing `Idempotency-Key`.
+- `[ ]` **Admin Overdue Debts** (`/admin/debts`):
+  - `[ ]` Admin view showing customers with debt older than 30 days.
+
+## 4. Quality & Definition of Done
+- `[ ]` Implement loading, error, empty, and success states for all async views.
+- `[ ]` Bilingual (French/Arabic) and RTL layout verification for new screens.
+- `[ ]` Run and pass `npm run lint`, `npm run typecheck`, and `npm run build`.
