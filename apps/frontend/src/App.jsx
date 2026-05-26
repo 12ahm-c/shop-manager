@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import AdminEmployeesScreen from './screens/AdminEmployeesScreen';
+import PosScreen from './screens/PosScreen';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <div className="p-4"><h1 className="text-2xl font-bold">Dashboard</h1><p>Welcome to ShopManager Pro.</p></div>
             } />
             
+            <Route path="/pos" element={<PosScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             
             {/* Admin Routes */}

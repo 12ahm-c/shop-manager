@@ -23,5 +23,28 @@
     "cancel": "Annuler",
     "edit": "Modifier",
     "delete": "Supprimer"
+  },
+  "pos": {
+    "currentSale": "Vente en cours",
+    "clear": "Vider",
+    "emptyCart": "Le panier est vide",
+    "total": "Total",
+    "checkout": "Payer",
+    "searchPlaceholder": "Rechercher un produit par nom ou code...",
+    "inStock": "en stock",
+    "completeSale": "Finaliser la Vente",
+    "paymentMethod": "Méthode de paiement",
+    "cash": "Espèces",
+    "mixed": "Mixte",
+    "cashGiven": "Montant reçu",
+    "change": "Monnaie",
+    "wallet": "Caisse/Portefeuille",
+    "selectWallet": "Sélectionner une caisse...",
+    "totalToPay": "Total à payer",
+    "confirmSale": "Confirmer la Vente",
+    "saleCompleted": "Vente Terminée",
+    "invoice": "Facture",
+    "pointsEarned": "Points Gagnés",
+    "newSale": "Nouvelle Vente"
   }
 }
