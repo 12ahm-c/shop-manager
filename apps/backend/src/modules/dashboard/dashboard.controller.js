@@ -6,6 +6,7 @@ const Supplier = require('../suppliers/supplier.model');
 const Wallet = require('../wallets/wallet.model');
 const Invoice = require('../invoices/invoice.model');
 const Notification = require('../notifications/notification.model');
+const cacheService = require('../../services/cache.service');
 const { sendSuccess, sendError } = require('../../utils/apiResponse');
 
 const employee = async (req, res, next) => {
@@ -70,6 +71,12 @@ const admin = async (req, res, next) => {
   try {
     const storeId = req.user.storeId;
     const period = req.query.period || 'today';
+
+    const cacheKey = cacheService.dashboardKey(storeId, period);
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      return sendSuccess(res, cached);
+    }
 
     let startDate;
     const now = new Date();
@@ -148,7 +155,7 @@ const admin = async (req, res, next) => {
       { $project: { _id: 1, name: { $ifNull: ['$product.name', 'Deleted'] }, revenue: { $round: ['$revenue', 2] } } }
     ]);
 
-    return sendSuccess(res, {
+    const result = {
       period,
       revenue: Math.round(revenue * 100) / 100,
       totalSales,
@@ -158,7 +165,11 @@ const admin = async (req, res, next) => {
       totalDebt: Math.round(totalDebt * 100) / 100,
       walletBalances,
       topProducts
-    });
+    };
+
+    await cacheService.set(cacheKey, result, 300);
+
+    return sendSuccess(res, result);
   } catch (error) {
     next(error);
   }
@@ -167,6 +178,12 @@ const admin = async (req, res, next) => {
 const financial = async (req, res, next) => {
   try {
     const storeId = req.user.storeId;
+
+    const cacheKey = cacheService.financialKey(storeId);
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      return sendSuccess(res, cached);
+    }
 
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -210,7 +227,7 @@ const financial = async (req, res, next) => {
 
     const pendingInvoices = await Invoice.countDocuments({ storeId, status: 'issued', error: { $ne: '' } });
 
-    return sendSuccess(res, {
+    const result = {
       period: 'this_month',
       totalRevenue: Math.round(totalRevenue * 100) / 100,
       totalProfit: Math.round(totalProfit * 100) / 100,
@@ -219,7 +236,11 @@ const financial = async (req, res, next) => {
       supplierDebtTotal: Math.round(supplierDebtTotal * 100) / 100,
       walletBalances,
       pendingInvoices
-    });
+    };
+
+    await cacheService.set(cacheKey, result, 300);
+
+    return sendSuccess(res, result);
   } catch (error) {
     next(error);
   }

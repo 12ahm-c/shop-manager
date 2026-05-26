@@ -36,6 +36,9 @@ function initSocket(httpServer) {
       socket.join(`admin:${storeId}`);
     }
     socket.join(`employee:${id}`);
+    socket.join(`ai:${id}`);
+
+    socket.on('disconnect', () => {});
   });
 
   return io;
@@ -49,4 +52,12 @@ function emitToAdmin(io, storeId, event, payload) {
   io.to(`admin:${storeId}`).emit(event, payload);
 }
 
-module.exports = { initSocket, emitToStore, emitToAdmin };
+function emitToUser(io, userId, event, payload) {
+  io.to(`employee:${userId}`).emit(event, payload);
+}
+
+function emitToAI(io, userId, event, payload) {
+  io.to(`ai:${userId}`).emit(event, payload);
+}
+
+module.exports = { initSocket, emitToStore, emitToAdmin, emitToUser, emitToAI };
