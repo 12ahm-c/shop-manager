@@ -8,6 +8,12 @@ const stockRoutes = require('./modules/stock/stock.routes');
 const saleRoutes = require('./modules/sales/sale.routes');
 const customerRoutes = require('./modules/customers/customer.routes');
 const walletRoutes = require('./modules/wallets/wallet.routes');
+const supplierRoutes = require('./modules/suppliers/supplier.routes');
+const invoiceRoutes = require('./modules/invoices/invoice.routes');
+const reportRoutes = require('./modules/reports/report.routes');
+const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
+const notificationRoutes = require('./modules/notifications/notification.routes');
+const adminRoutes = require('./modules/admin/admin.routes');
 const errorHandler = require('./middlewares/error.middleware');
 
 const app = express();
@@ -34,6 +40,12 @@ app.use('/v1/stock', stockRoutes);
 app.use('/v1/sales', saleRoutes);
 app.use('/v1/customers', customerRoutes);
 app.use('/v1/wallets', walletRoutes);
+app.use('/v1/suppliers', supplierRoutes);
+app.use('/v1/invoices', invoiceRoutes);
+app.use('/v1/reports', reportRoutes);
+app.use('/v1/dashboard', dashboardRoutes);
+app.use('/v1/notifications', notificationRoutes);
+app.use('/v1/admin', adminRoutes);
 
 // 404 Route handler
 app.use((req, res, next) => {
