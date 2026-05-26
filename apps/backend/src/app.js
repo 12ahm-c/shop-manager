@@ -14,7 +14,11 @@ const reportRoutes = require('./modules/reports/report.routes');
 const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
 const notificationRoutes = require('./modules/notifications/notification.routes');
 const adminRoutes = require('./modules/admin/admin.routes');
+const aiRoutes = require('./modules/ai/ai.routes');
+const healthRoutes = require('./modules/health/health.routes');
 const errorHandler = require('./middlewares/error.middleware');
+const { apiLimiter, salesLimiter, aiLimiter } = require('./middlewares/rateLimit.middleware');
+const { createRequestLogger } = require('./utils/logger');
 
 const app = express();
 
@@ -23,13 +27,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logging
+app.use(createRequestLogger());
+
+// API-wide rate limiting
+app.use('/v1', apiLimiter);
+
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'UP',
-    timestamp: new Date()
-  });
-});
+app.use('/health', healthRoutes);
 
 // API Routes mounting
 app.use('/v1/auth', authRoutes);
@@ -37,7 +42,7 @@ app.use('/v1/users', userRoutes);
 app.use('/v1/admin/employees', employeeRoutes);
 app.use('/v1/products', productRoutes);
 app.use('/v1/stock', stockRoutes);
-app.use('/v1/sales', saleRoutes);
+app.use('/v1/sales', salesLimiter, saleRoutes);
 app.use('/v1/customers', customerRoutes);
 app.use('/v1/wallets', walletRoutes);
 app.use('/v1/suppliers', supplierRoutes);
@@ -45,6 +50,7 @@ app.use('/v1/invoices', invoiceRoutes);
 app.use('/v1/reports', reportRoutes);
 app.use('/v1/dashboard', dashboardRoutes);
 app.use('/v1/notifications', notificationRoutes);
+app.use('/v1/ai', aiLimiter, aiRoutes);
 app.use('/v1/admin', adminRoutes);
 
 // 404 Route handler

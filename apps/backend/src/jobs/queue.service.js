@@ -2,7 +2,7 @@ const { Queue } = require('bullmq');
 const IORedis = require('ioredis');
 
 let connection = null;
-let invoiceQueue = null;
+let queues = {};
 
 function getConnection() {
   if (!connection) {
@@ -16,19 +16,43 @@ function getConnection() {
   return connection;
 }
 
-function getInvoiceQueue() {
-  if (!invoiceQueue) {
-    invoiceQueue = new Queue('invoice-generation', { connection: getConnection() });
+function getQueue(name) {
+  if (!queues[name]) {
+    queues[name] = new Queue(name, { connection: getConnection() });
   }
-  return invoiceQueue;
+  return queues[name];
 }
 
-async function addInvoiceJob(data) {
-  const queue = getInvoiceQueue();
-  return queue.add('generate', data, {
-    attempts: 5,
-    backoff: { type: 'exponential', delay: 2000 }
+async function addJob(queueName, jobName, data, opts = {}) {
+  const queue = getQueue(queueName);
+  return queue.add(jobName, data, {
+    attempts: opts.attempts || 3,
+    backoff: { type: 'exponential', delay: opts.backoffDelay || 2000 },
+    ...opts
   });
 }
 
-module.exports = { getConnection, getInvoiceQueue, addInvoiceJob };
+async function addInvoiceJob(data) {
+  return addJob('invoice-generation', 'generate', data, { attempts: 5, backoffDelay: 2000 });
+}
+
+async function addWhatsAppJob(data) {
+  return addJob('whatsapp', 'send', data, { attempts: 5, backoffDelay: 5000 });
+}
+
+async function addEmailJob(data) {
+  return addJob('email', 'send', data, { attempts: 5, backoffDelay: 5000 });
+}
+
+async function addReportJob(data) {
+  return addJob('reports', 'generate', data, { attempts: 3, backoffDelay: 5000 });
+}
+
+async function addBackupJob(data) {
+  return addJob('backup', 'backup', data, { attempts: 2, backoffDelay: 10000 });
+}
+
+module.exports = {
+  getConnection, getQueue, addJob,
+  addInvoiceJob, addWhatsAppJob, addEmailJob, addReportJob, addBackupJob
+};

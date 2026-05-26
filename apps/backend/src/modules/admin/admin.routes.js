@@ -6,6 +6,7 @@ const Log = require('./log.model');
 const Store = require('../stores/store.model');
 const { sendSuccess, sendError } = require('../../utils/apiResponse');
 const notifController = require('../notifications/notification.controller');
+const { addBackupJob } = require('../../jobs/queue.service');
 
 // GET /v1/admin/logs
 router.get('/logs', authenticate, requireRole('admin', 'accountant'), async (req, res, next) => {
@@ -91,10 +92,10 @@ router.get('/stores', authenticate, requireRole('admin'), async (req, res, next)
 // POST /v1/admin/backup
 router.post('/backup', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
-    // In Phase 5, backup is a stub — triggers BullMQ job placeholder
+    await addBackupJob({ storeId: req.user.storeId, triggeredBy: req.user.id });
     return sendSuccess(res, {
-      message: 'Backup job triggered',
-      note: 'Full backup implementation (mongodump + S3) will be added in Phase 8'
+      message: 'Backup job queued',
+      note: 'Backup runs asynchronously via BullMQ worker (mongodump)'
     });
   } catch (error) {
     next(error);

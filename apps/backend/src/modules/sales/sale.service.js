@@ -8,6 +8,7 @@ const WalletTransaction = require('../wallets/walletTransaction.model');
 const Invoice = require('../invoices/invoice.model');
 const Store = require('../stores/store.model');
 const Log = require('../admin/log.model');
+const cacheService = require('../../services/cache.service');
 const { generateInvoiceNumber } = require('../../utils/invoiceNumber');
 const { addInvoiceJob } = require('../../jobs/queue.service');
 
@@ -249,6 +250,8 @@ async function createSale(data, user) {
     await session.commitTransaction();
     session.endSession();
 
+    cacheService.invalidateDashboard(storeId).catch(() => {});
+
     // Step 6: Post-transaction async work
     const io = require('../../app').getIO();
     if (io) {
@@ -384,6 +387,8 @@ async function cancelSale(saleId, user) {
 
     await session.commitTransaction();
     session.endSession();
+
+    cacheService.invalidateDashboard(storeId).catch(() => {});
 
     const io = require('../../app').getIO();
     if (io) {
