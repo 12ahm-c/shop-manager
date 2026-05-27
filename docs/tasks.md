@@ -1,14 +1,15 @@
-# Phase 4 Tasks - Customers, Loyalty, Debts
+# Phase 5 Tasks - Suppliers, Wallets, Finance
 
 ## Deliverables
 
-- [x] Implement Customer search and detail screens
-- [x] Implement Debt and credit limit display
-- [x] Implement Loyalty points display
-- [x] Implement Purchase history view
-- [x] Implement Debt payment form
-- [x] Implement Admin overdue debts view
+- [ ] Implement Supplier list, create, detail, debt, and payment screens
+- [ ] Implement Wallet overview
+- [ ] Implement Wallet transaction history with cursor pagination
+- [ ] Implement Wallet transfer form
+- [ ] Implement Accountant reconciliation form
+- [ ] Implement Financial dashboard shell
 
 ## API Integration
 
-- [x] Integrate Customer endpoints from API contract section 7
+- [ ] Integrate Supplier endpoints from API contract section 8
+- [ ] Integrate Wallet endpoints from API contract section 9

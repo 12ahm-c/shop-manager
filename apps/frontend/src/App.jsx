@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthGuard from './components/AuthGuard';
 import Layout from './components/Layout';
@@ -16,6 +15,15 @@ import CustomerProfileScreen from './screens/CustomerProfileScreen';
 import AdminOverdueDebtsScreen from './screens/AdminOverdueDebtsScreen';
 import CustomersListScreen from './screens/CustomersListScreen';
 
+// Phase 5 Screens
+import SuppliersListScreen from './screens/SuppliersListScreen';
+import SupplierProfileScreen from './screens/SupplierProfileScreen';
+import WalletsListScreen from './screens/WalletsListScreen';
+import WalletTransactionsScreen from './screens/WalletTransactionsScreen';
+import WalletTransferScreen from './screens/WalletTransferScreen';
+import AccountantReconciliationScreen from './screens/AccountantReconciliationScreen';
+import FinancialDashboardScreen from './screens/FinancialDashboardScreen';
+
 function App() {
   return (
     <BrowserRouter>
@@ -27,7 +35,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             
-            {/* Dashboard placeholder */}
+            {/* Dashboard placeholder for employee */}
             <Route path="/dashboard" element={
               <div className="p-4"><h1 className="text-2xl font-bold">Dashboard</h1><p>Welcome to ShopManager Pro.</p></div>
             } />
@@ -43,7 +51,18 @@ function App() {
             <Route path="/customers" element={<CustomersListScreen />} />
             <Route path="/customers/:id" element={<CustomerProfileScreen />} />
             
-            {/* Admin Routes */}
+            {/* Shared Admin & Accountant */}
+            <Route element={<AuthGuard allowedRoles={['admin', 'accountant']} />}>
+              <Route path="/admin/wallets" element={<WalletsListScreen />} />
+              <Route path="/accountant/wallets" element={<WalletsListScreen />} />
+              <Route path="/admin/wallets/:id" element={<WalletTransactionsScreen />} />
+              <Route path="/accountant/wallets/:id" element={<WalletTransactionsScreen />} />
+              
+              <Route path="/admin/dashboard" element={<FinancialDashboardScreen />} />
+              <Route path="/accountant/dashboard" element={<FinancialDashboardScreen />} />
+            </Route>
+
+            {/* Admin Only Routes */}
             <Route element={<AuthGuard allowedRoles={['admin']} />}>
               <Route path="/admin/employees" element={<AdminEmployeesScreen />} />
               <Route path="/admin/products/new" element={<AdminProductFormScreen />} />
@@ -52,6 +71,15 @@ function App() {
               <Route path="/admin/stock/adjust" element={<AdminStockAdjustScreen />} />
               <Route path="/admin/stock/transfer" element={<AdminStockTransferScreen />} />
               <Route path="/admin/debts" element={<AdminOverdueDebtsScreen />} />
+              
+              <Route path="/admin/suppliers" element={<SuppliersListScreen />} />
+              <Route path="/admin/suppliers/:id" element={<SupplierProfileScreen />} />
+              <Route path="/admin/wallets/transfer" element={<WalletTransferScreen />} />
+            </Route>
+
+            {/* Accountant Only Routes */}
+            <Route element={<AuthGuard allowedRoles={['accountant']} />}>
+              <Route path="/accountant/wallets/:id/reconcile" element={<AccountantReconciliationScreen />} />
             </Route>
 
           </Route>

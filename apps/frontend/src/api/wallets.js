@@ -1,19 +1,28 @@
-const delay = (ms) => new Promise(res => setTimeout(res, ms));
+import { api } from './client';
 
 export const walletsApi = {
   getWallets: async () => {
-    await delay(300);
-    return {
-      success: true,
-      data: {
-        wallets: [
-          { _id: "65f000000000000000000201", name: "Caisse Principale", balance: 150000, type: "cash" },
-          { _id: "65f000000000000000000202", name: "Bankily", balance: 200000, type: "mobile_money" },
-          { _id: "65f000000000000000000203", name: "Masrivi", balance: 50000, type: "mobile_money" },
-        ]
-      },
-      error: null,
-      meta: null
-    };
+    return await api.get('/wallets');
+  },
+
+  createWallet: async (data) => {
+    return await api.post('/wallets', data);
+  },
+
+  transfer: async (data, idempotencyKey) => {
+    return await api.post('/wallets/transfer', data, {
+      headers: {
+        'Idempotency-Key': idempotencyKey
+      }
+    });
+  },
+
+  getTransactions: async (id, cursor = null, limit = 20) => {
+    const query = cursor ? `?cursor=${cursor}&limit=${limit}` : `?limit=${limit}`;
+    return await api.get(`/wallets/${id}/transactions${query}`);
+  },
+
+  reconcile: async (id, data) => {
+    return await api.post(`/wallets/${id}/reconcile`, data);
   }
 };

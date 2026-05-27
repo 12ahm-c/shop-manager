@@ -17,6 +17,9 @@ import {
   User as UserIcon,
   Menu,
   AlertCircle,
+  Truck,
+  Wallet,
+  LineChart
 } from 'lucide-react';
 import { authApi } from '../api/auth';
 
@@ -38,10 +41,15 @@ export default function Layout() {
   };
 
   const navItems = [
-    { name: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'employee', 'accountant'] },
+    { name: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'employee'] },
+    { name: t('nav.adminDashboard', 'Admin Dashboard'), href: '/admin/dashboard', icon: LineChart, roles: ['admin'] },
+    { name: t('nav.accountantDashboard', 'Accountant Dashboard'), href: '/accountant/dashboard', icon: LineChart, roles: ['accountant'] },
     { name: t('nav.pos'), href: '/pos', icon: Store, roles: ['admin', 'employee'] },
     { name: t('nav.products'), href: '/products', icon: Package, roles: ['admin', 'employee'] },
     { name: t('nav.customers'), href: '/customers', icon: Users, roles: ['admin', 'employee'] },
+    { name: t('nav.suppliers', 'Suppliers'), href: '/admin/suppliers', icon: Truck, roles: ['admin'] },
+    { name: t('nav.wallets', 'Wallets'), href: '/admin/wallets', icon: Wallet, roles: ['admin'] },
+    { name: t('nav.wallets', 'Wallets'), href: '/accountant/wallets', icon: Wallet, roles: ['accountant'] },
     { name: t('nav.employees'), href: '/admin/employees', icon: UserCog, roles: ['admin'] },
     { name: t('nav.stockReceive'), href: '/admin/stock/receive', icon: PackagePlus, roles: ['admin'] },
     { name: t('nav.stockAdjust'), href: '/admin/stock/adjust', icon: PackageMinus, roles: ['admin'] },
@@ -65,7 +73,7 @@ export default function Layout() {
                 const isActive = location.pathname.startsWith(item.href);
                 return (
                   <Link
-                    key={item.name}
+                    key={`${item.name}-${item.href}`}
                     to={item.href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
                       isActive 
