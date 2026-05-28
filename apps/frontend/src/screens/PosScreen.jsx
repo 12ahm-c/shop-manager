@@ -6,6 +6,7 @@ import { useWalletStore } from '../stores/walletStore';
 import { useUiStore } from '../stores/uiStore';
 import { productsApi } from '../api/products';
 import { salesApi } from '../api/sales';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 export default function PosScreen() {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export default function PosScreen() {
 
   // Load initial products and wallets
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts('');
     fetchWallets();
   }, [fetchProducts, fetchWallets]);
@@ -83,9 +85,9 @@ export default function PosScreen() {
   };
 
   return (
-    <div className="flex h-full gap-6">
+    <div className="flex flex-col lg:flex-row h-full gap-6">
       {/* LEFT: CART PANEL */}
-      <div className="w-1/3 min-w-[350px] flex flex-col bg-card border rounded-xl overflow-hidden shadow-sm">
+      <div className="w-full lg:w-1/3 lg:min-w-[350px] flex flex-col bg-card border rounded-xl overflow-hidden shadow-sm lg:h-full max-h-[50vh] lg:max-h-full">
         <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
           <h2 className="text-lg font-bold flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
@@ -161,9 +163,7 @@ export default function PosScreen() {
 
         <div className="flex-1 overflow-y-auto">
           {loadingProducts ? (
-            <div className="flex justify-center items-center h-40">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
+            <LoadingSkeleton variant="card" count={8} />
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-10">
               {products.map(p => (

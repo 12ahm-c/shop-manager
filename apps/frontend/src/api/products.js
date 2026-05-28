@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Using mock responses based on docs/API-contract.md exactly
 import { api } from './client';
 

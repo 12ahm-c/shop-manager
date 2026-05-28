@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, Loader2, Eye, Truck } from 'lucide-react';
+import { Search, Plus, Eye, Truck } from 'lucide-react';
 import { suppliersApi } from '../api/suppliers';
 import { useAuthStore } from '../stores/authStore';
+import LoadingSkeleton from '../components/LoadingSkeleton';
+import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
 
 export default function SuppliersListScreen() {
   const { t } = useTranslation();
@@ -84,15 +87,11 @@ export default function SuppliersListScreen() {
       </div>
 
       {loading && suppliers.length === 0 ? (
-        <div className="flex items-center justify-center h-40">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        <LoadingSkeleton variant="table-row" count={5} />
       ) : error ? (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-xl">{error}</div>
+        <ErrorState message={error} onRetry={fetchSuppliers} />
       ) : filteredSuppliers.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground bg-card border rounded-xl">
-          <p>{t('suppliers.noSuppliers', 'No suppliers found')}</p>
-        </div>
+        <EmptyState title={t('suppliers.noSuppliers', 'No suppliers found')} icon={Truck} />
       ) : (
         <div className="bg-card border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">

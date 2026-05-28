@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { employeesApi } from '../api/employees';
-import { Loader2, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Users } from 'lucide-react';
+import LoadingSkeleton from '../components/LoadingSkeleton';
+import EmptyState from '../components/EmptyState';
 
 export default function AdminEmployeesScreen() {
   const { t } = useTranslation();
@@ -20,11 +22,7 @@ export default function AdminEmployeesScreen() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <LoadingSkeleton variant="table-row" count={5} />;
   }
 
   return (
@@ -40,27 +38,23 @@ export default function AdminEmployeesScreen() {
         </button>
       </div>
 
-      <div className="bg-card border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-muted text-muted-foreground border-b">
-              <tr>
-                <th className="px-6 py-3 font-medium">Name</th>
-                <th className="px-6 py-3 font-medium">Phone</th>
-                <th className="px-6 py-3 font-medium">Role</th>
-                <th className="px-6 py-3 font-medium">Status</th>
-                <th className="px-6 py-3 font-medium text-end">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {employees.length === 0 ? (
+      {employees.length === 0 ? (
+        <EmptyState title="No employees found" description="There are currently no employees in the system." icon={Users} />
+      ) : (
+        <div className="bg-card border rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-muted text-muted-foreground border-b">
                 <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-muted-foreground">
-                    No employees found.
-                  </td>
+                  <th className="px-6 py-3 font-medium">Name</th>
+                  <th className="px-6 py-3 font-medium">Phone</th>
+                  <th className="px-6 py-3 font-medium">Role</th>
+                  <th className="px-6 py-3 font-medium">Status</th>
+                  <th className="px-6 py-3 font-medium text-end">Actions</th>
                 </tr>
-              ) : (
-                employees.map((emp) => (
+              </thead>
+              <tbody className="divide-y divide-border">
+                {employees.map((emp) => (
                   <tr key={emp._id} className="hover:bg-secondary/50 transition-colors">
                     <td className="px-6 py-4 font-medium">{emp.name}</td>
                     <td className="px-6 py-4" dir="ltr">{emp.phone}</td>
@@ -87,12 +81,12 @@ export default function AdminEmployeesScreen() {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

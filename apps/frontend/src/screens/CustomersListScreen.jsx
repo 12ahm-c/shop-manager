@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, Loader2, Eye, User } from 'lucide-react';
+import { Search, Plus, Eye, User } from 'lucide-react';
 import { customersApi } from '../api/customers';
 import { useAuthStore } from '../stores/authStore';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 export default function CustomersListScreen() {
   const { t } = useTranslation();
@@ -79,15 +82,11 @@ export default function CustomersListScreen() {
       </div>
 
       {loading && customers.length === 0 ? (
-        <div className="flex items-center justify-center h-40">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        <LoadingSkeleton variant="table-row" count={5} />
       ) : error ? (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-xl">{error}</div>
+        <ErrorState message={error} onRetry={() => fetchCustomers(searchQuery)} />
       ) : customers.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground bg-card border rounded-xl">
-          <p>{t('customers.noCustomers', 'No customers found')}</p>
-        </div>
+        <EmptyState title={t('customers.noCustomers', 'No customers found')} icon={User} />
       ) : (
         <div className="bg-card border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">

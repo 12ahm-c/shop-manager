@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 173 80% 40%;
+    --primary: 173 80% 28%; /* Darkened for WCAG AA contrast against white text */
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 40% 96.1%;
@@ -73,5 +73,16 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+  
+  /* Global focus-visible styles for accessibility */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 }

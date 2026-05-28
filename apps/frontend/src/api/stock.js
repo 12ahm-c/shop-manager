@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Using mock responses based on docs/API-contract.md
 import { api } from './client';
 
@@ -40,7 +41,7 @@ export const stockApi = {
     };
   },
 
-  receiveStock: async (data, idempotencyKey) => {
+  receiveStock: async (_data, _idempotencyKey) => {
     // return api.post('/stock/receive', data, { headers: { 'Idempotency-Key': idempotencyKey } });
     await delay(500);
     return {
@@ -48,7 +49,7 @@ export const stockApi = {
       data: {
         lot: {
           _id: "65f000000000000000000203",
-          ...data,
+          ..._data,
           status: "active",
           createdAt: new Date().toISOString()
         }
@@ -58,7 +59,7 @@ export const stockApi = {
     };
   },
 
-  adjustStock: async (data, idempotencyKey) => {
+  adjustStock: async (_data, _idempotencyKey) => {
     // return api.post('/stock/adjust', data, { headers: { 'Idempotency-Key': idempotencyKey } });
     await delay(400);
     return {
@@ -69,7 +70,7 @@ export const stockApi = {
     };
   },
 
-  transferStock: async (data, idempotencyKey) => {
+  transferStock: async (_data, _idempotencyKey) => {
     // return api.post('/stock/transfer', data, { headers: { 'Idempotency-Key': idempotencyKey } });
     await delay(500);
     return {

@@ -17,7 +17,11 @@
     "stockReceive": "Réception stock",
     "stockAdjust": "Ajustement stock",
     "stockTransfer": "Transfert stock",
-    "debts": "Dettes en retard"
+    "debts": "Dettes en retard",
+    "reports": "Rapports",
+    "notifications": "Notifications",
+    "ai": "Assistant IA",
+    "alerts": "Alertes système"
   },
   "common": {
     "loading": "Chargement...",
@@ -138,5 +142,66 @@
   },
   "sales": {
     "invoice": "Facture"
+  },
+  "invoices": {
+    "title": "Détails de la facture",
+    "resent": "Renvoyée !",
+    "resend": "Renvoyer",
+    "download": "Télécharger le PDF",
+    "previewAvailable": "Cliquez sur télécharger pour voir la facture PDF complète.",
+    "noPdf": "La génération du PDF est en attente ou a échoué."
+  },
+  "reports": {
+    "title": "Rapports",
+    "subtitle": "Générer et télécharger des rapports financiers et opérationnels.",
+    "dailyCash": "Rapport de caisse journalier",
+    "profitability": "Rapport de rentabilité",
+    "topProducts": "Rapport des meilleurs produits",
+    "aging": "Rapport de vieillissement des dettes",
+    "type": "Type de rapport",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "format": "Format",
+    "generating": "Génération...",
+    "download": "Télécharger le rapport"
+  },
+  "dashboard": {
+    "employeeTitle": "Tableau de bord de l'employé",
+    "employeeSubtitle": "Aperçu de vos performances quotidiennes.",
+    "dailySales": "Ventes du jour",
+    "itemsSold": "Articles vendus",
+    "revenue": "Revenu",
+    "adminTitle": "Tableau de bord administrateur",
+    "adminSubtitle": "Indicateurs de performance du magasin.",
+    "periodToday": "Aujourd'hui",
+    "periodWeek": "Cette semaine",
+    "periodMonth": "Ce mois",
+    "margin": "Marge",
+    "salesCount": "Nombre de ventes",
+    "stockValue": "Valeur du stock",
+    "activeDebts": "Dettes actives",
+    "accountantTitle": "Tableau de bord financier",
+    "financialSubtitle": "Aperçu de vos performances financières",
+    "profit": "Bénéfice brut",
+    "expenses": "Dépenses totales"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Vos alertes et mises à jour récentes.",
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Vous n'avez aucune notification.",
+    "markRead": "Marquer comme lu"
+  },
+  "alerts": {
+    "title": "Alertes système",
+    "subtitle": "Alertes critiques actives sur tous les magasins.",
+    "empty": "Aucune alerte système active."
+  },
+  "ai": {
+    "welcome": "Bonjour ! Comment puis-je vous aider à gérer votre magasin aujourd'hui ?",
+    "error": "Désolé, j'ai rencontré une erreur. Veuillez réessayer.",
+    "title": "Assistant IA",
+    "subtitle": "Posez des questions sur vos ventes, vos stocks et vos clients.",
+    "inputPlaceholder": "Tapez votre question ici..."
   }
 }

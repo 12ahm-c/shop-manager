@@ -95,146 +95,146 @@
 ## Phase 6 - Invoices, Reports, Communications
 
 ### Screens
-- [ ] Invoice detail/download view (`/invoices/:id`)
-- [ ] Invoice status display (pending, generated, sent, failed)
-- [ ] Resend invoice action button (WhatsApp/email requeue)
-- [ ] Reports page with date/period filters (`/admin/reports`, `/accountant/reports`)
-- [ ] Report file downloads (PDF/XLSX)
+- [x] Invoice detail/download view (`/invoices/:id`)
+- [x] Invoice status display (pending, generated, sent, failed)
+- [x] Resend invoice action button (WhatsApp/email requeue)
+- [x] Reports page with date/period filters (`/admin/reports`, `/accountant/reports`)
+- [x] Report file downloads (PDF/XLSX)
 
 ### API Integration
-- [ ] `GET /invoices/:id` — retrieve signed PDF URL
-- [ ] `GET /invoices/sale/:saleId` — invoice for a specific sale
-- [ ] `POST /invoices/:id/resend` — requeue WhatsApp/email send
-- [ ] `GET /reports/daily-cash` — PDF/XLSX daily cash report
-- [ ] `GET /reports/profitability` — margin report
-- [ ] `GET /reports/top-products` — top products report
-- [ ] `GET /reports/aging` — customer/supplier debt aging
+- [x] `GET /invoices/:id` — retrieve signed PDF URL
+- [x] `GET /invoices/sale/:saleId` — invoice for a specific sale
+- [x] `POST /invoices/:id/resend` — requeue WhatsApp/email send
+- [x] `GET /reports/daily-cash` — PDF/XLSX daily cash report
+- [x] `GET /reports/profitability` — margin report
+- [x] `GET /reports/top-products` — top products report
+- [x] `GET /reports/aging` — customer/supplier debt aging
 
 ### API Client
-- [ ] Create `src/api/invoices.js` with invoice endpoint functions
-- [ ] Create `src/api/reports.js` with report endpoint functions
+- [x] Create `src/api/invoices.js` with invoice endpoint functions
+- [x] Create `src/api/reports.js` with report endpoint functions
 
 ### Routes
-- [ ] Add `/invoices/:id` route (employee/admin/accountant)
-- [ ] Add `/admin/reports` route (admin)
-- [ ] Add `/accountant/reports` route (accountant)
+- [x] Add `/invoices/:id` route (employee/admin/accountant)
+- [x] Add `/admin/reports` route (admin)
+- [x] Add `/accountant/reports` route (accountant)
 
 ### UX Requirements
-- [ ] Loading, error, empty, and success states for all views
-- [ ] Role guard: employee/admin/accountant for invoices, admin/accountant for reports
-- [ ] Bilingual labels (French/Arabic) for invoice and report screens
+- [x] Loading, error, empty, and success states for all views
+- [x] Role guard: employee/admin/accountant for invoices, admin/accountant for reports
+- [x] Bilingual labels (French/Arabic) for invoice and report screens
 
 ---
 
 ## Phase 7 - Dashboard, Alerts, AI
 
 ### Dashboard Screens
-- [ ] Employee dashboard (`/dashboard`) — cashier KPIs (daily sales, items sold, revenue)
-- [ ] Admin dashboard (`/admin/dashboard`) — store KPIs with period selector (today/week/month)
-- [ ] Accountant dashboard (`/accountant/dashboard`) — financial KPIs
+- [x] Employee dashboard (`/dashboard`) — cashier KPIs (daily sales, items sold, revenue)
+- [x] Admin dashboard (`/admin/dashboard`) — store KPIs with period selector (today/week/month)
+- [x] Accountant dashboard (`/accountant/dashboard`) — financial KPIs
 
 ### Notification Center
-- [ ] Notification center screen (`/notifications`)
-- [ ] Header unread notification badge (count)
-- [ ] Mark single notification as read
-- [ ] Mark all notifications as read
-- [ ] Admin alerts page (`/admin/alerts`)
+- [x] Notification center screen (`/notifications`)
+- [x] Header unread notification badge (count)
+- [x] Mark single notification as read
+- [x] Mark all notifications as read
+- [x] Admin alerts page (`/admin/alerts`)
 
 ### Realtime Socket.IO Integration
-- [ ] Socket.IO client connection with auth token and storeId
-- [ ] Listen for `sale:new` event (admin notification)
-- [ ] Listen for `dashboard:update` event (auto-refresh dashboard data)
-- [ ] Listen for `alert:stock_critical` event (stock alert notification)
-- [ ] Listen for `alert:out_of_stock` event (out-of-stock notification)
-- [ ] Listen for `alert:debt_overdue` event (admin debt reminder)
-- [ ] Listen for `alert:low_wallet` event (admin/accountant alert)
-- [ ] Listen for `ai:response` event (AI chat streaming)
-- [ ] Create `notificationStore` Zustand store (in-app notifications, unread count, realtime alerts)
+- [x] Socket.IO client connection with auth token and storeId
+- [x] Listen for `sale:new` event (admin notification)
+- [x] Listen for `dashboard:update` event (auto-refresh dashboard data)
+- [x] Listen for `alert:stock_critical` event (stock alert notification)
+- [x] Listen for `alert:out_of_stock` event (out-of-stock notification)
+- [x] Listen for `alert:debt_overdue` event (admin debt reminder)
+- [x] Listen for `alert:low_wallet` event (admin/accountant alert)
+- [x] Listen for `ai:response` event (AI chat streaming)
+- [x] Create `notificationStore` Zustand store (in-app notifications, unread count, realtime alerts)
 
 ### AI Chat
-- [ ] AI chat page/panel (`/ai`)
-- [ ] Chat message input and response display
-- [ ] Suggested questions/prompts
-- [ ] Optional chart rendering in AI responses
-- [ ] RBAC: employees cannot access sensitive financial answers
+- [x] AI chat page/panel (`/ai`)
+- [x] Chat message input and response display
+- [x] Suggested questions/prompts
+- [x] Optional chart rendering in AI responses
+- [x] RBAC: employees cannot access sensitive financial answers
 
 ### API Integration
-- [ ] `GET /dashboard/employee` — cashier KPIs
-- [ ] `GET /dashboard/admin?period=` — store KPIs with period filter
-- [ ] `GET /dashboard/financial` — financial KPIs
-- [ ] `POST /ai/chat` — natural-language question
-- [ ] `GET /ai/suggestions` — suggested prompts
-- [ ] `GET /ai/health` — LLM provider health check (admin)
-- [ ] `GET /notifications/me` — own notifications
-- [ ] `PATCH /notifications/:id/read` — mark one read
-- [ ] `PATCH /notifications/read-all` — mark all read
-- [ ] `GET /admin/alerts` — system alerts
+- [x] `GET /dashboard/employee` — cashier KPIs
+- [x] `GET /dashboard/admin?period=` — store KPIs with period filter
+- [x] `GET /dashboard/financial` — financial KPIs
+- [x] `POST /ai/chat` — natural-language question
+- [x] `GET /ai/suggestions` — suggested prompts
+- [x] `GET /ai/health` — LLM provider health check (admin)
+- [x] `GET /notifications/me` — own notifications
+- [x] `PATCH /notifications/:id/read` — mark one read
+- [x] `PATCH /notifications/read-all` — mark all read
+- [x] `GET /admin/alerts` — system alerts
 
 ### API Client
-- [ ] Update `src/api/dashboard.js` with full dashboard endpoint functions
-- [ ] Create `src/api/ai.js` with AI endpoint functions
-- [ ] Create `src/api/notifications.js` with notification endpoint functions
+- [x] Update `src/api/dashboard.js` with full dashboard endpoint functions
+- [x] Create `src/api/ai.js` with AI endpoint functions
+- [x] Create `src/api/notifications.js` with notification endpoint functions
 
 ### Routes
-- [ ] Replace dashboard placeholder with real Employee dashboard
-- [ ] Add `/notifications` route (all authenticated roles)
-- [ ] Add `/ai` route (employee/admin)
-- [ ] Add `/admin/alerts` route (admin)
+- [x] Replace dashboard placeholder with real Employee dashboard
+- [x] Add `/notifications` route (all authenticated roles)
+- [x] Add `/ai` route (employee/admin)
+- [x] Add `/admin/alerts` route (admin)
 
 ### UX Requirements
-- [ ] Loading, error, empty, and success states for all views
-- [ ] Period selector component for admin dashboard (today/week/month)
-- [ ] Role guards on all new routes
-- [ ] Bilingual labels (French/Arabic) for dashboard, notification, and AI screens
+- [x] Loading, error, empty, and success states for all views
+- [x] Period selector component for admin dashboard (today/week/month)
+- [x] Role guards on all new routes
+- [x] Bilingual labels (French/Arabic) for dashboard, notification, and AI screens
 
 ---
 
 ## Phase 8 - Production Hardening
 
 ### Accessibility
-- [ ] Semantic HTML review across all screens
-- [ ] Keyboard navigation support on interactive elements
-- [ ] Visible focus states on all focusable elements
-- [ ] Sufficient color contrast (WCAG AA minimum)
-- [ ] ARIA labels on icons, modals, and non-text controls
+- [x] Semantic HTML review across all screens
+- [x] Keyboard navigation support on interactive elements
+- [x] Visible focus states on all focusable elements
+- [x] Sufficient color contrast (WCAG AA minimum)
+- [x] ARIA labels on icons, modals, and non-text controls
 
 ### Responsive Design
-- [ ] POS screen tablet/mobile layout pass
-- [ ] Dashboard responsive layout pass
-- [ ] All admin forms responsive on small screens
-- [ ] Navigation sidebar collapse/hamburger on mobile
-- [ ] Table components: horizontal scroll or card layout on narrow screens
+- [x] POS screen tablet/mobile layout pass
+- [x] Dashboard responsive layout pass
+- [x] All admin forms responsive on small screens
+- [x] Navigation sidebar collapse/hamburger on mobile
+- [x] Table components: horizontal scroll or card layout on narrow screens
 
 ### Performance
-- [ ] Lazy-loaded routes (`React.lazy` + `Suspense`)
-- [ ] Code-splitting per phase/feature group
-- [ ] Production build verification (`npm run build` passes cleanly)
+- [x] Lazy-loaded routes (`React.lazy` + `Suspense`)
+- [x] Code-splitting per phase/feature group
+- [x] Production build verification (`npm run build` passes cleanly)
 
 ### Error & State Handling Audit
-- [ ] Consistent empty state illustrations/messages across all list views
-- [ ] Consistent error state display with retry action across all views
-- [ ] Consistent loading skeletons/spinners across all views
+- [x] Consistent empty state illustrations/messages across all list views
+- [x] Consistent error state display with retry action across all views
+- [x] Consistent loading skeletons/spinners across all views
 
 ### Socket.IO Resilience
-- [ ] Socket reconnect with exponential backoff
-- [ ] Graceful handling of connection drops (UI indicator)
-- [ ] Automatic re-subscription to rooms after reconnect
+- [x] Socket reconnect with exponential backoff
+- [x] Graceful handling of connection drops (UI indicator)
+- [x] Automatic re-subscription to rooms after reconnect
 
 ### Bilingual / RTL Audit
-- [ ] All visible strings use i18n keys (no hardcoded text)
-- [ ] RTL layout renders correctly for Arabic
-- [ ] Language switcher persists preference
+- [x] All visible strings use i18n keys (no hardcoded text)
+- [x] RTL layout renders correctly for Arabic
+- [x] Language switcher persists preference
 
 ### Linting & Build
-- [ ] `npm run lint` passes with zero errors
-- [ ] `npm run build` produces valid production bundle
-- [ ] No console warnings or errors in production build
+- [x] `npm run lint` passes with zero errors
+- [x] `npm run build` produces valid production bundle
+- [x] No console warnings or errors in production build
 
 ### Security Review
-- [ ] No sensitive data in Zustand stores or localStorage (tokens handled securely)
-- [ ] All API calls go through central `src/api/client.js`
-- [ ] `purchasePrice` and `profit` fields hidden for employee role in all views
-- [ ] `Idempotency-Key` sent for all required mutation endpoints
+- [x] No sensitive data in Zustand stores or localStorage (tokens handled securely)
+- [x] All API calls go through central `src/api/client.js`
+- [x] `purchasePrice` and `profit` fields hidden for employee role in all views
+- [x] `Idempotency-Key` sent for all required mutation endpoints
 
 ---
 
