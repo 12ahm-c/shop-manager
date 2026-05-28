@@ -14,6 +14,7 @@ import AdminStockAdjustScreen from './screens/AdminStockAdjustScreen';
 import AdminStockTransferScreen from './screens/AdminStockTransferScreen';
 import CustomerProfileScreen from './screens/CustomerProfileScreen';
 import AdminOverdueDebtsScreen from './screens/AdminOverdueDebtsScreen';
+import CustomersListScreen from './screens/CustomersListScreen';
 
 function App() {
   return (
@@ -39,7 +40,7 @@ function App() {
             <Route path="/products/:id" element={<ProductDetailScreen />} />
             
             {/* Customers (Admin & Employee) */}
-            {/* <Route path="/customers" element={<CustomersListScreen />} /> (Placeholder for later) */}
+            <Route path="/customers" element={<CustomersListScreen />} />
             <Route path="/customers/:id" element={<CustomerProfileScreen />} />
             
             {/* Admin Routes */}
