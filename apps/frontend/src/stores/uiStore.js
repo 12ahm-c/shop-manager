@@ -16,5 +16,8 @@ export const useUiStore = create((set) => ({
     })),
     
   globalLoading: false,
-  setGlobalLoading: (isLoading) => set({ globalLoading: isLoading })
+  setGlobalLoading: (isLoading) => set({ globalLoading: isLoading }),
+  
+  socketConnected: true,
+  setSocketConnected: (isConnected) => set({ socketConnected: isConnected })
 }));

@@ -1,31 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, Eye, User } from 'lucide-react';
-import { customersApi } from '../api/customers';
+import { Search, Plus, Eye, Truck } from 'lucide-react';
+import { suppliersApi } from '../api/suppliers';
 import { useAuthStore } from '../stores/authStore';
-import EmptyState from '../components/EmptyState';
-import ErrorState from '../components/ErrorState';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
 
-export default function CustomersListScreen() {
+export default function SuppliersListScreen() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [customers, setCustomers] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const isAdmin = user?.role === 'admin';
-  const isEmployee = user?.role === 'employee';
+  const isAccountant = user?.role === 'accountant';
 
-  const fetchCustomers = useCallback(async (q) => {
+  const fetchSuppliers = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await customersApi.searchCustomers(q);
+      const res = await suppliersApi.getSuppliers();
       if (res.success) {
-        setCustomers(res.data.customers || []);
+        setSuppliers(res.data.suppliers || []);
       } else {
         setError(res.error?.message || t('common.error', 'An error occurred'));
       }
@@ -37,35 +37,40 @@ export default function CustomersListScreen() {
   }, [t]);
 
   useEffect(() => {
-    // Basic debounce for search
-    const timer = setTimeout(() => {
-      fetchCustomers(searchQuery);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery, fetchCustomers]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSuppliers();
+  }, [fetchSuppliers]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  const filteredSuppliers = suppliers.filter(s => 
+    (s.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (s.phone || '').includes(searchQuery)
+  );
+
+  if (!isAdmin && !isAccountant) {
+    return <div className="p-6 text-center text-destructive">Unauthorized access</div>;
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <User className="w-6 h-6" />
-            {t('customers.title', 'Customers')}
+            <Truck className="w-6 h-6" />
+            {t('suppliers.title', 'Suppliers')}
           </h2>
-          <p className="text-muted-foreground">{t('customers.subtitle', 'Manage your customers and debts')}</p>
+          <p className="text-muted-foreground">{t('suppliers.subtitle', 'Manage suppliers and their debts')}</p>
         </div>
-        {/* Placeholder for future Add Customer modal/screen */}
-        {(isAdmin || isEmployee) && (
+        {isAdmin && (
           <button
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-            onClick={() => alert('Add customer functionality to be implemented')}
+            onClick={() => alert('Add supplier functionality to be implemented')}
           >
             <Plus className="w-4 h-4" />
-            <span>{t('customers.addCustomer', 'Add Customer')}</span>
+            <span>{t('suppliers.addSupplier', 'Add Supplier')}</span>
           </button>
         )}
       </div>
@@ -74,19 +79,19 @@ export default function CustomersListScreen() {
         <Search className="w-5 h-5 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
-          placeholder={t('customers.searchPlaceholder', 'Search by name or phone...')}
+          placeholder={t('suppliers.searchPlaceholder', 'Search by name or phone...')}
           value={searchQuery}
           onChange={handleSearch}
           className="w-full ps-10 pe-4 py-3 bg-card border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
 
-      {loading && customers.length === 0 ? (
+      {loading && suppliers.length === 0 ? (
         <LoadingSkeleton variant="table-row" count={5} />
       ) : error ? (
-        <ErrorState message={error} onRetry={() => fetchCustomers(searchQuery)} />
-      ) : customers.length === 0 ? (
-        <EmptyState title={t('customers.noCustomers', 'No customers found')} icon={User} />
+        <ErrorState message={error} onRetry={fetchSuppliers} />
+      ) : filteredSuppliers.length === 0 ? (
+        <EmptyState title={t('suppliers.noSuppliers', 'No suppliers found')} icon={Truck} />
       ) : (
         <div className="bg-card border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
@@ -95,41 +100,31 @@ export default function CustomersListScreen() {
                 <tr>
                   <th className="px-6 py-3 font-medium text-start">{t('common.name', 'Name')}</th>
                   <th className="px-6 py-3 font-medium text-start">{t('common.phone', 'Phone')}</th>
-                  <th className="px-6 py-3 font-medium text-start">{t('customers.loyaltyPoints', 'Loyalty Points')}</th>
-                  <th className="px-6 py-3 font-medium text-start">{t('customers.currentDebt', 'Debt')}</th>
-                  <th className="px-6 py-3 font-medium text-start">{t('customers.creditLimit', 'Credit Limit')}</th>
+                  <th className="px-6 py-3 font-medium text-start">{t('suppliers.debt', 'Debt')}</th>
                   <th className="px-6 py-3 font-medium text-end">{t('common.actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {customers.map((customer) => (
-                  <tr key={customer._id} className="hover:bg-secondary/50 transition-colors">
+                {filteredSuppliers.map((supplier) => (
+                  <tr key={supplier._id} className="hover:bg-secondary/50 transition-colors">
                     <td className="px-6 py-4 font-medium">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                          {customer.name.charAt(0).toUpperCase()}
+                          {supplier.name.charAt(0).toUpperCase()}
                         </div>
-                        {customer.name}
+                        {supplier.name}
                       </div>
                     </td>
-                    <td className="px-6 py-4" dir="ltr">{customer.phone}</td>
+                    <td className="px-6 py-4" dir="ltr">{supplier.phone}</td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                        {customer.loyaltyPoints}
+                      <span className={`font-bold ${supplier.debt > 0 ? 'text-destructive' : 'text-foreground'}`}>
+                        {(supplier.debt || 0).toLocaleString()}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`font-bold ${customer.debt > 0 ? 'text-destructive' : 'text-foreground'}`}>
-                        {customer.debt.toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">
-                      {customer.creditLimit > 0 ? customer.creditLimit.toLocaleString() : '-'}
                     </td>
                     <td className="px-6 py-4 text-end">
                       <div className="flex justify-end gap-2">
                         <Link
-                          to={`/customers/${customer._id}`}
+                          to={`/admin/suppliers/${supplier._id}`}
                           className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
                           title={t('common.view', 'View')}
                         >

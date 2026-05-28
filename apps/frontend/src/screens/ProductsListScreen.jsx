@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, Loader2, Eye, Edit2 } from 'lucide-react';
+import { Search, Plus, Eye, Edit2, Package } from 'lucide-react';
 import { productsApi } from '../api/products';
 import { useProductStore } from '../stores/productStore';
 import { useAuthStore } from '../stores/authStore';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 export default function ProductsListScreen() {
   const { t } = useTranslation();
@@ -34,6 +37,7 @@ export default function ProductsListScreen() {
   }, [t]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts(searchQuery);
   }, [searchQuery, fetchProducts]);
 
@@ -71,15 +75,11 @@ export default function ProductsListScreen() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center h-40">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        <LoadingSkeleton variant="table-row" count={5} />
       ) : error ? (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-xl">{error}</div>
+        <ErrorState message={error} onRetry={() => fetchProducts(searchQuery)} />
       ) : products.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>{t('products.noProducts')}</p>
-        </div>
+        <EmptyState title={t('products.noProducts')} icon={Package} />
       ) : (
         <div className="bg-card border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
